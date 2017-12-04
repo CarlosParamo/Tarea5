@@ -30,11 +30,12 @@ float main(void){
         Md_walk[0]=10.0*drand48();
 	Mh_walk[0]=10.0*drand48();
       
-        /*y_init = my_model(x_obs, m_walk[0], b_walk[0])*/
+        //y_init = my_model(x_obs, m_walk[0], b_walk[0])
         vdata=malloc(N*sizeof(double));
         rdata=malloc(N*sizeof(double));
         loadata(rdata,vdata);
         int i;
+        
 	for(i=0;i<N;i++)
 	{
                 printf("%lf ",rdata[i]);
@@ -42,14 +43,15 @@ float main(void){
 	}
         
 	printf("hasta aqui funciona\n");
-
+         
         vmodel=malloc(N*sizeof(double));
         vmodin=malloc(N*sizeof(double));
-         
+        
         modelo(vmodin,rdata,Mb_walk[0], Md_walk[0], Mh_walk[0]);
         int chicua;
         likelihood(vdata,vmodin,chicua);
         l_walk[0]=chicua;
+        
         
         for(i=0;i<N;i++)
 	{
@@ -95,7 +97,7 @@ float main(void){
                      }
          	}      
     	 }
-return 0;
+	return 0;
 }
 
 void modelo(double *v, double *R, double Mb, double Md, double Mh)
@@ -135,11 +137,16 @@ void likelihood2(double *yobs, double ymod, double a)
 
 void loadata(double *x, double *y)
 {
-    	int i = 0;
-	double number;
-        char la;
-	FILE *file = fopen("RadialVelocities.dat", "r");
-	while(fscanf(file, "%lf\n", &number)!=0)
+	FILE* file = fopen("RadialVelocities.dat", "r");
+
+	char palabra[100];
+   	double number;
+	int i=0;
+
+	fscanf(file, "%s",palabra);
+    	fscanf(file, "%s",palabra);
+	
+	while(fscanf(file,"%lf\n", &number)==1)
      	{
         	if(i%2==0)
         	{
