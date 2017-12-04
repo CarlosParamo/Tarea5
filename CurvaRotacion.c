@@ -30,20 +30,10 @@ float main(void){
         Md_walk[0]=10.0*drand48();
 	Mh_walk[0]=10.0*drand48();
       
-        //y_init = my_model(x_obs, m_walk[0], b_walk[0])
         vdata=malloc(N*sizeof(double));
         rdata=malloc(N*sizeof(double));
         loadata(rdata,vdata);
-        int i;
-        
-	for(i=0;i<N;i++)
-	{
-                printf("%lf ",rdata[i]);
-                printf("%lf\n",vdata[i]);
-	}
-        
-	printf("hasta aqui funciona\n");
-         
+ 
         vmodel=malloc(N*sizeof(double));
         vmodin=malloc(N*sizeof(double));
         
@@ -52,7 +42,7 @@ float main(void){
         likelihood(vdata,vmodin,chicua);
         l_walk[0]=chicua;
         
-        
+        int i;
         for(i=0;i<N;i++)
 	{
                 Mb_prime=malloc(N*sizeof(double));
@@ -97,7 +87,59 @@ float main(void){
                      }
          	}      
     	 }
-	return 0;
+        /*
+        FILE *fp;
+ 	fp = fopen ("Parametros.dat", "r+");
+	for(i=0;i<N;i++)
+	{
+                fprintf(fp, "%lf ",Mb_walk[i]);
+                fprintf(fp, "%lf ",Mb_walk[i]);
+                fprintf(fp, "%lf\n",Mb_walk[i]);
+	}
+        fclose ( fp );
+*/
+	
+//Se hallan los mejores parametros. 
+        double Best_Mb=0;
+        for (i=0; i<10; i++)
+	{
+        	if (Mb_walk[i]> Best_Mb)
+                {
+    			Best_Mb=Mb_walk[i];
+                }
+	}
+	double Best_Md=0;
+        for (i=0; i<10; i++)
+	{
+        	if (Md_walk[i]> Best_Md)
+                {
+    			Best_Md=Md_walk[i];
+                }
+        }
+
+	double Best_Mh=0;
+        for (i=0; i<10; i++)
+	{
+        	if (Mh_walk[i]> Best_Mh)
+                {
+    			Best_Mh=Mh_walk[i];
+                }
+        }
+
+        double *vmodfin;
+
+	modelo(vmodfin,rdata,Best_Mb, Best_Md, Best_Mh);
+
+ 	FILE *fp;
+ 	fp = fopen ("dataout.dat", "r+");
+	for(i=0;i<N;i++)
+	{
+                fprintf(fp, "%lf \n",vmodfin[i]);
+	}
+        fclose ( fp );
+	
+
+return 0;
 }
 
 void modelo(double *v, double *R, double Mb, double Md, double Mh)
@@ -134,6 +176,8 @@ void likelihood2(double *yobs, double ymod, double a)
 	chisq = (1.0/2.0)*suma;
         a= exp(-chisq);     
 }
+
+
 
 void loadata(double *x, double *y)
 {
